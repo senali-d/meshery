@@ -24,7 +24,7 @@ if (typeof window !== 'undefined') {
   const wsProtocol = isWss ? "wss://" : "ws://"
   console.log("🚀 ~ file: relayEnvironment.js:28 ~ window.location.host:", window.location.host)
   subscriptionClient = createClient({
-    url: wsProtocol + window.location.host + "/api/system/graphql/query",
+    url: proxyUrl + "/api/system/graphql/query",
   })
 }
 

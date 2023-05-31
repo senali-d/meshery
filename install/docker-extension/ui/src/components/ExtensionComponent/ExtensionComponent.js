@@ -34,6 +34,7 @@ import {
 } from './styledComponents'
 import { MesheryAnimation } from '../MesheryAnimation/MesheryAnimation'
 import { trueRandom, randomApplicationNameGenerator } from '../../utils'
+import changeAdapterState from '../graphql/mutations/AdapterStatusMutation'
 
 const AuthenticatedMsg = 'Authenticated'
 const UnauthenticatedMsg = 'Unauthenticated'
@@ -131,6 +132,149 @@ const ExtensionsComponent = () => {
       .then(console.log)
       .catch(console.error)
   }
+
+  const handleAdapterDeploy = () => {
+    console.log('Deploying')
+    // const { selectedAvailableAdapter, meshDeployURL } = this.state;
+
+    // if (!selectedAvailableAdapter || !selectedAvailableAdapter.value || selectedAvailableAdapter.value === "") {
+    //   this.setState({ selectedAvailableAdapterError : true });
+    //   return;
+    // }
+
+    // if (!meshDeployURL || meshDeployURL === "") {
+    //   console.log(meshDeployURL)
+    //   // this.setState({ meshDeployURLError : true });
+    //   return;
+    // }
+
+    // this.props.updateProgress({ showProgress : true });
+
+//     adapter
+// : 
+// "meshery-istio"
+// targetPort
+// : 
+// "10000"
+// targetStatus
+// : 
+// "ENABLED"
+    const variables = {
+      status : "ENABLED",
+      adapter : "meshery-istio",
+      targetPort : 10000
+      // selectedAvailableAdapter.label,
+      // meshDeployURL
+    };
+
+    changeAdapterState((response, errors) => {
+      // this.props.updateProgress({ showProgress : false });
+
+      // if (errors !== undefined) {
+      //   this.handleError("Unable to Deploy adapter");
+      // }
+      if (errors !== undefined) {
+        console.error("Unable to Deploy adapter");
+      }
+      console.log("Deploy",response.adapterStatus.toLowerCase());
+      // this.props.enqueueSnackbar("Adapter " + response.adapterStatus.toLowerCase(), {
+      //   variant : "success",
+      //   autoHideDuration : 2000,
+      //   action : (key) => (
+      //     <IconButton key="close" aria-label="Close" color="inherit" onClick={() => this.closeSnackbar(key)}>
+      //       <CloseIcon style={iconMedium} />
+      //     </IconButton>
+      //   ),
+      // });
+    }, variables);
+  }
+
+  // handleAdapterDeploy = () => {
+  //   const { selectedAvailableAdapter, meshDeployURL } = this.state;
+
+  //   if (!selectedAvailableAdapter || !selectedAvailableAdapter.value || selectedAvailableAdapter.value === "") {
+  //     this.setState({ selectedAvailableAdapterError : true });
+  //     return;
+  //   }
+
+  //   if (!meshDeployURL || meshDeployURL === "") {
+  //     console.log(meshDeployURL)
+  //     this.setState({ meshDeployURLError : true });
+  //     return;
+  //   }
+
+  //   this.props.updateProgress({ showProgress : true });
+
+  //   const variables = {
+  //     status : "ENABLED",
+  //     adapter : selectedAvailableAdapter.label,
+  //     targetPort : meshDeployURL
+  //   };
+
+  //   changeAdapterState((response, errors) => {
+  //     this.props.updateProgress({ showProgress : false });
+
+  //     if (errors !== undefined) {
+  //       this.handleError("Unable to Deploy adapter");
+  //     }
+  //     this.props.enqueueSnackbar("Adapter " + response.adapterStatus.toLowerCase(), {
+  //       variant : "success",
+  //       autoHideDuration : 2000,
+  //       action : (key) => (
+  //         <IconButton key="close" aria-label="Close" color="inherit" onClick={() => this.closeSnackbar(key)}>
+  //           <CloseIcon style={iconMedium} />
+  //         </IconButton>
+  //       ),
+  //     });
+  //   }, variables);
+  // };
+
+  // handleAdapterUndeploy = () => {
+  //   const { meshLocationURL } = this.state;
+
+  //   if (!meshLocationURL || !meshLocationURL.value || meshLocationURL.value === "") {
+  //     this.setState({ meshLocationURLError : true });
+  //     return;
+  //   }
+
+  //   this.props.updateProgress({ showProgress : true });
+
+  //   const variables = {
+  //     status : "DISABLED",
+  //     adapter : "",
+  //     targetPort : meshLocationURL.value
+  //   };
+
+  //   changeAdapterState((response, errors) => {
+  //     this.props.updateProgress({ showProgress : false });
+
+  //     if (errors !== undefined) {
+  //       this.handleError("Unable to Deploy adapter");
+  //     }
+  //     this.props.enqueueSnackbar("Adapter " + response.adapterStatus.toLowerCase(), {
+  //       variant : "success",
+  //       autoHideDuration : 2000,
+  //       action : (key) => (
+  //         <IconButton key="close" aria-label="Close" color="inherit" onClick={() => this.closeSnackbar(key)}>
+  //           <CloseIcon style={iconMedium} />
+  //         </IconButton>
+  //       ),
+  //     });
+  //   }, variables);
+  // };
+
+  // handleError = (msg) => (error) => {
+  //   this.props.updateProgress({ showProgress : false });
+  //   const self = this;
+  //   this.props.enqueueSnackbar(`${msg}: ${error}`, { variant : "error",
+  //     action : (key) => (
+  //       <IconButton key="close" aria-label="Close" color="inherit" onClick={() => self.props.closeSnackbar(key)}>
+  //         <CloseIcon />
+  //       </IconButton>
+  //     ),
+  //     autoHideDuration : 8000, });
+  // }; 
+
 
   useEffect(() => {
     let ws = new WebSocket('ws://127.0.0.1:7877/ws')
@@ -507,6 +651,7 @@ const ExtensionsComponent = () => {
                           </StyledDiv>
                         ))}
                     </ServiceMeshAdapters>
+                    <button type="button" onClick={()=>handleAdapterDeploy()}>Deploy</button>
                   </div>
                 ) : (
                   <div>

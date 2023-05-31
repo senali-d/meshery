@@ -1,5 +1,8 @@
 {
   "dependencies": {
     "google-sheet-cli": "^1.6.0"
+  },
+  "devDependencies": {
+    "babel-plugin-relay": "^15.0.0"
   }
 }
