@@ -115,6 +115,8 @@ const ExtensionsComponent = () => {
   const [changing, isChanging] = useState(false)
   const [emptystate, isEmptystate] = useState(true)
   const [meshAdapters, setMeshAdapters] = useState(null)
+  const [switchAdopterState, setSwitchAdopterState] = useState(null)
+
   useEffect(() => {
     if (meshAdapters && meshAdapters.length !== 0) {
       setSwitchesState(
@@ -122,6 +124,11 @@ const ExtensionsComponent = () => {
           [adapter.name]: false,
         })),
       )
+      let adapters = []
+      meshAdapters.map((adapter) => (
+        adapters.push({[adapter.name]: false})
+      ))
+      setSwitchAdopterState(adapters)
     }
   }, [meshAdapters])
   const [mesheryVersion, setMesheryVersion] = useState(null)
@@ -276,11 +283,17 @@ const ExtensionsComponent = () => {
     reader.readAsText(file)
   }
 
+  const adopterDeployconfig = (adapter, status) => {
+    const config = adapter.adapter_location.split(':')
+    const name = config[0]
+    const port = config[1]
+  }
+
   return (
     <DockerMuiThemeProvider>
       <CssBaseline />
       {changing && (
-        <LoadingDiv sx={{ opacity: '1' }}>
+        <LoadingDiv sx={{ opacity: "1" }}>
           <LoadComp />
         </LoadingDiv>
       )}
@@ -288,51 +301,47 @@ const ExtensionsComponent = () => {
         {isLoggedIn && <Tour />}
         <div
           style={{
-            display: 'flex',
-            justifyContent: 'space-evenly',
+            display: "flex",
+            justifyContent: "space-evenly",
           }}
         >
           <div>
-            <MesheryIcon CustomColor={isDarkTheme ? 'white' : '#3C494F'} />
+            <MesheryIcon CustomColor={isDarkTheme ? "white" : "#3C494F"} />
 
-            <Typography sx={{ margin: 'auto', paddingTop: '1rem' }}>
-              Design and operate your cloud native deployments with the
-              extensible management plane, Meshery.
+            <Typography sx={{ margin: "auto", paddingTop: "1rem" }}>
+              Design and operate your cloud native deployments with the extensible management plane, Meshery.
             </Typography>
           </div>
 
           {!isLoggedIn ? (
-            <div sx={{ display: 'none' }}></div>
+            <div sx={{ display: "none" }}></div>
           ) : (
             <div>
-              <ExtensionWrapper
-                className="third-step"
-                sx={{ backgroundColor: isDarkTheme ? '#393F49' : '#D7DADE' }}
-              >
+              <ExtensionWrapper className="third-step" sx={{ backgroundColor: isDarkTheme ? "#393F49" : "#D7DADE" }}>
                 <AccountDiv>
                   <div
                     style={{
-                      display: 'flex',
-                      flexDirection: 'column',
-                      alignItems: 'center',
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
                     }}
                   >
                     {userName && (
                       <Typography
                         sx={{
-                          display: 'flex',
-                          flexDirection: 'column',
-                          alignItems: 'center',
-                          marginBottom: '1.5rem',
+                          display: "flex",
+                          flexDirection: "column",
+                          alignItems: "center",
+                          marginBottom: "1.5rem",
                         }}
                       >
                         {userName}
                         <Avatar
                           src={avatar}
                           sx={{
-                            width: '5rem',
-                            height: '5rem',
-                            marginTop: '1.5rem',
+                            width: "5rem",
+                            height: "5rem",
+                            marginTop: "1.5rem",
                           }}
                         />
                       </Typography>
@@ -341,15 +350,10 @@ const ExtensionsComponent = () => {
                       variant="p"
                       component="p"
                       style={{
-                        transform: 'none',
+                        transform: "none",
                       }}
                     >
-                      <Button
-                        onClick={logout}
-                        color="secondary"
-                        component="span"
-                        variant="contained"
-                      >
+                      <Button onClick={logout} color="secondary" component="span" variant="contained">
                         Logout
                       </Button>
                     </LogoutButton>
@@ -419,17 +423,10 @@ const ExtensionsComponent = () => {
           </ExtensionWrapper>
 
           {isLoggedIn && (
-            <ExtensionWrapper
-              className="second-step"
-              sx={{ backgroundColor: isDarkTheme ? '#393F49' : '#D7DADE' }}
-            >
+            <ExtensionWrapper className="second-step" sx={{ backgroundColor: isDarkTheme ? "#393F49" : "#D7DADE" }}>
               <AccountDiv>
-                <Typography
-                  sx={{ marginBottom: '2rem', whiteSpace: ' nowrap' }}
-                >
-                  Import Compose App
-                </Typography>
-                <div style={{ paddingBottom: '2rem' }}>
+                <Typography sx={{ marginBottom: "2rem", whiteSpace: " nowrap" }}>Import Compose App</Typography>
+                <div style={{ paddingBottom: "2rem" }}>
                   <label htmlFor="upload-button">
                     <Button
                       variant="contained"
@@ -513,10 +510,60 @@ const ExtensionsComponent = () => {
                     <Typography sx={{ marginBottom: '1rem' }} variant="h4">
                       No Meshery Adapters Detected
                     </Typography>
-                    <i>
-                      Connect one or more Meshery adapters to manage service
-                      meshes
-                    </i>
+                    <i>Connect one or more Meshery adapters to manage service meshes</i>
+                  </div>
+                )}
+              </ExtensionWrapper>
+            </div>
+          )}
+          {!!isLoggedIn && (
+            <div style={{ paddingTop: isLoggedIn ? "1.2rem" : null }}>
+              <ExtensionWrapper
+                className="first-step"
+                sx={{
+                  height: ["22rem", "17rem", "14rem"],
+                  backgroundColor: isDarkTheme ? "#393F49" : "#D7DADE",
+                }}
+              >
+                {!emptystate ? (
+                  <div>
+                    <Typography sx={{ marginBottom: "1rem" }}>Deploy/Undeploy Mesh Adapters</Typography>
+                    <ServiceMeshAdapters>
+                      {meshAdapters &&
+                        switchAdopterState &&
+                        meshAdapters.map((adapter) => (
+                          <StyledDiv>
+                            <AdapterDiv inactiveAdapter={switchAdopterState ? !switchAdopterState[adapter.name] : true}>
+                              {adapters[adapter.name].icon}
+                            </AdapterDiv>
+                            <Typography sx={{ whiteSpace: "nowrap" }}>{adapters[adapter.name].displayName}</Typography>
+                            <Switch
+                              checked={switchAdopterState ? switchAdopterState[adapter.name] : false}
+                              disabled={!isLoggedIn}
+                              onChange={() => {
+                                setSwitchAdopterState((prevState) => {
+                                  const newState = prevState.map((obj) => {
+                                    if (obj[adapter.name] !== undefined) {
+                                      adopterDeployconfig(adapter, !obj[adapter.name])
+                                      return { ...obj, [adapter.name]: !obj[adapter.name] };
+                                    }
+                                    return obj;
+                                  });
+                                  return newState;
+                                });
+                              }}
+                              color="primary"
+                            ></Switch>
+                          </StyledDiv>
+                        ))}
+                    </ServiceMeshAdapters>
+                  </div>
+                ) : (
+                  <div>
+                    <Typography sx={{ marginBottom: "1rem" }} variant="h4">
+                      No Mesh Adapters Detected
+                    </Typography>
+                    <i>Connect one or more Mesh adapters to manage service meshes</i>
                   </div>
                 )}
               </ExtensionWrapper>
