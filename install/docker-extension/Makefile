@@ -52,7 +52,7 @@ ui-build:
 	cd ui/src; npm install; npm run build; cd ../..;
 
 ui:
-	cd ui/src; npm install; npm run start; cd ../..;
+	cd ui/src; npm run start; cd ../..;
 # Make easier to debug the UI
 link:
 	docker extension dev ui-source meshery/docker-extension-meshery:${GIT_STRIPPED_VERSION} http://localhost:3000

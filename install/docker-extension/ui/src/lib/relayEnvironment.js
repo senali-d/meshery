@@ -1,7 +1,7 @@
 import { createClient } from "graphql-ws";
 import { Environment, Network, Observable, RecordSource, Store,  } from "relay-runtime"
 import { promisifiedDataFetch } from "./data-fetch"
-const proxyUrl = 'http://127.0.0.1:7877'
+const proxyUrl = 'http://127.0.0.1:3000'
 
 function fetchQuery(operation, variables) {
   return promisifiedDataFetch(proxyUrl+"/api/system/graphql/query", {
