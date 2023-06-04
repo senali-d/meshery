@@ -19,10 +19,12 @@
     "@testing-library/react": "^12.1.4",
     "@testing-library/user-event": "^13.5.0",
     "axios": "^0.26.1",
+    "graphql-ws": "^5.13.1",
     "isomorphic-unfetch": "^3.1.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-joyride": "^2.4.0",
+    "react-relay": "^15.0.0",
     "react-scripts": "5.0.0",
     "sans-serif": "^1.0.0",
     "styled-components": "^5.3.5",
@@ -52,5 +54,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "babel-plugin-relay": "^15.0.0"
   }
 }

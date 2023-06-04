@@ -34,6 +34,7 @@ import {
 } from './styledComponents'
 import { MesheryAnimation } from '../MesheryAnimation/MesheryAnimation'
 import { trueRandom, randomApplicationNameGenerator } from '../../utils'
+import changeAdapterState from '../graphql/mutations/AdapterStatusMutation';
 
 const AuthenticatedMsg = 'Authenticated'
 const UnauthenticatedMsg = 'Unauthenticated'
@@ -287,6 +288,15 @@ const ExtensionsComponent = () => {
     const config = adapter.adapter_location.split(':')
     const name = config[0]
     const port = config[1]
+    const variables = {
+      status : status === true ? "ENABLED" : "DISABLED",
+      adapter : name,
+      targetPort : port
+    };
+    changeAdapterState((response, errors) => {
+      console.log("🚀 ~ file: ExtensionComponent.js:297 ~ changeAdapterState ~ errors:", errors)
+      console.log("🚀 ~ file: ExtensionComponent.js:297 ~ changeAdapterState ~ response:", response)
+    }, variables);
   }
 
   return (

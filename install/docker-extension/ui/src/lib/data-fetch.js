@@ -6,7 +6,7 @@ const dataFetch = (url, options = {}, successFn, errorFn) => {
   // options.signal = signal;
   // setTimeout(() => controller.abort(), 10000); // nice to have but will mess with the load test
   fetch(url, options)
-    .then(res => {
+  .then(res => {
       if (res.status === 401 || res.redirected) {
         if (window.location.host.endsWith('3000')) {
           window.location = "/user/login"; // for local dev thru node server
@@ -32,7 +32,7 @@ const dataFetch = (url, options = {}, successFn, errorFn) => {
       }
 
     }).then(successFn)
-    .catch(errorFn);
+    .catch((errorFn) => console.log(errorFn, 'errorFn'));
 }
 
 /**
