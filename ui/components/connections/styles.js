@@ -226,6 +226,9 @@ const styles = (theme) => ({
       color: `${theme.palette.secondary.iconMain} !important`,
     },
   },
+  '& .MuiDialog-root::-webkit-scrollbar': {
+    display: 'none',
+  },
 });
 
 export default styles;

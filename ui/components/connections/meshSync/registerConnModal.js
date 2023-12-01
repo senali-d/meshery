@@ -26,7 +26,7 @@ const RegisterConnectionModal = (props) => {
             border: `6px solid ${theme.palette.secondary.success}`,
           }}
         >
-          <ConnectionWizard />
+          <ConnectionWizard wizardType="modal" />
         </DialogContent>
       </Dialog>
     </div>

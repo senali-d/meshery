@@ -10,7 +10,7 @@ import { store } from '../../store';
 import { ErrorBoundary } from '../General/ErrorBoundary';
 // import Verify from "./verify";
 
-const ConnectionWizard = ({ user }) => {
+const ConnectionWizard = ({ user, wizardType }) => {
   const router = useRouter();
   const [connection, setConnection] = useState({
     connectionType: '', // github, kubernetes, etc
@@ -52,12 +52,23 @@ const ConnectionWizard = ({ user }) => {
         console.log('shouldRedirect', shouldRedirect);
       }
     }
+    if (wizardType === 'modal') {
+      const newConnection = {
+        connectionType: 'register-connection',
+        connectionAction: 'new',
+        connectionId: null,
+      };
+      setConnection(newConnection);
+    }
   }, [router.query]);
 
   return (
     <>
       {connection.connectionAction === 'new' && (
-        <ConnectionStepper connectionType={connection.connectionType} />
+        <ConnectionStepper
+          wizardType={wizardType ? wizardType : 'page'}
+          connectionType={connection.connectionType}
+        />
       )}
     </>
   );

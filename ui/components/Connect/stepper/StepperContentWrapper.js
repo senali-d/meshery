@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Typography, Divider, Button } from '@material-ui/core';
+import { Box, Typography, Divider, Button, Checkbox } from '@material-ui/core';
 import { useStyles } from '../styles';
 import { useTheme } from '@material-ui/core/styles';
 import { Colors } from '../../../themes/app';
@@ -21,6 +21,7 @@ const StepperContent = ({
   handleCallback,
   cancelCallback,
   disabled,
+  tipsType,
 }) => {
   const theme = useTheme();
   const classes = useStyles();
@@ -42,7 +43,9 @@ const StepperContent = ({
               margin: '2rem 0',
             }}
           >
-            <Typography style={{ fontSize: '1rem' }}>{tips}</Typography>
+            <Typography style={{ fontSize: '1rem' }}>
+              {tipsType == 'cb' && <Checkbox color="success" />} {tips}
+            </Typography>
           </Box>
         )}
       </div>

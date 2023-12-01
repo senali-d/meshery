@@ -50,6 +50,11 @@ export const CONNECTION_STATES = {
   NOTFOUND: 'not found',
 };
 
+export const MESHSYNC_STATES = {
+  DISCOVERED: 'discovered',
+  REGISTERED: 'registered',
+};
+
 export const MesheryPatternsCatalog = 'meshery-patterns-catalog';
 
 export const MesheryFiltersCatalog = 'meshery-filters-catalog';

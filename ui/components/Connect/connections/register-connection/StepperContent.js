@@ -1,50 +1,58 @@
-import React from 'react';
-import { ConnectionADetailContent, FinishContent, CredentialDetailContent } from './constants';
+import React, { useEffect, useState } from 'react';
+import { ConnectionDetailContent, FinishContent, CredentialDetailContent } from './constants';
 
 import StepperContent from '../../stepper/StepperContentWrapper';
 import RJSFWrapper from '../../../MesheryMeshInterface/PatternService/RJSF_wrapper';
+import dataFetch from '../../../../lib/data-fetch';
+import { FormControl, Select } from '@material-ui/core';
 
-export const ConnectionDetails = () => {
+export const ConnectionDetails = ({ handleNext }) => {
+  const [schema, setSchema] = useState({});
+  const [component, setComponent] = useState({});
   const formRef = React.createRef();
-  const schema = {
-    rjsfSchema: {
-      properties: {
-        name: {
-          description: 'A short, memorable name of the registering connection.',
-          minLength: 1,
-          title: 'Name',
-          type: 'string',
-          'x-rjsf-grid-area': '12',
-        },
+
+  useEffect(() => {
+    registerConnection();
+  }, []);
+
+  useEffect(() => {
+    ConnectionDetailContent.title = `Connecting to ${component.displayName}`;
+  }, [component]);
+
+  const registerConnection = () => {
+    const componentMetadata = localStorage.getItem('componentMetadata');
+    const componentMetadataObj = JSON.parse(componentMetadata);
+    const metadata = JSON.parse(componentMetadataObj.metadata);
+
+    dataFetch(
+      '/api/integrations/connections/register',
+      {
+        method: 'POST',
+        credentials: 'include',
+        body: JSON.stringify({
+          application_data: metadata.model,
+          status: 'initialize',
+        }),
       },
-      required: ['name'],
-      type: 'object',
-    },
-    uiSchema: {
-      'ui:order': ['name'],
-    },
+      (result) => {
+        const connectionData = result?.component;
+        setComponent(connectionData);
+        const schema = connectionData.schema;
+        const jsonSchema = JSON.parse(schema);
+        setSchema(jsonSchema);
+      },
+    );
   };
 
   const handleCallback = () => {
-    // MOve to step 2
-  };
-
-  const cancelCallback = () => {
-    // Close Modal
+    handleNext();
   };
 
   return (
-    <StepperContent
-      {...ConnectionADetailContent}
-      handleCallback={handleCallback}
-      cancelCallback={cancelCallback}
-      disabled={false}
-      // btnText={'Connect'}
-    >
+    <StepperContent {...ConnectionDetailContent} handleCallback={handleCallback} disabled={false}>
       <RJSFWrapper
         key="register-connection-rjsf-form"
-        uiSchema={schema.uiSchema}
-        jsonSchema={schema.rjsfSchema}
+        jsonSchema={schema}
         liveValidate={false}
         formRef={formRef}
       />
@@ -52,55 +60,122 @@ export const ConnectionDetails = () => {
   );
 };
 
-export const CredentialDetails = () => {
+export const CredentialDetails = ({ handleNext }) => {
+  const [schema, setSchema] = useState({});
+  const [credential, setCredential] = useState({});
+  const [, /*existingConnection*/ setExistingConnection] = useState({});
   const formRef = React.createRef();
-  const schemaExistingCredential = {
-    rjsfSchema: {
-      properties: {
-        name: {
-          description: 'A short, memorable name of the registering connection.',
-          minLength: 1,
-          title: 'Name',
-          type: 'string',
-          'x-rjsf-grid-area': '12',
-        },
+
+  useEffect(() => {
+    registerConnection();
+    getchExistingCredential();
+  }, []);
+
+  useEffect(() => {
+    CredentialDetailContent.title = `Credential for ${credential.displayName}`;
+  }, [credential]);
+
+  const registerConnection = () => {
+    const componentMetadata = localStorage.getItem('componentMetadata');
+    const componentMetadataObj = JSON.parse(componentMetadata);
+    const metadata = JSON.parse(componentMetadataObj.metadata);
+
+    dataFetch(
+      '/api/integrations/connections/register',
+      {
+        method: 'POST',
+        credentials: 'include',
+        body: JSON.stringify({
+          application_data: metadata.model,
+          status: 'initialize',
+        }),
       },
-      required: ['name'],
-      type: 'object',
-    },
-    uiSchema: {
-      'ui:order': ['name'],
-    },
+      (result) => {
+        const credentialData = result?.credential;
+        setCredential(credentialData);
+        const schema = credentialData.schema;
+        const jsonSchema = JSON.parse(schema);
+        setSchema(jsonSchema);
+      },
+    );
   };
 
-  const schemaNewCredential = {
-    rjsfSchema: {
-      properties: {
-        secret: {
-          description: 'Secret',
-          minLength: 1,
-          title: 'Secret',
-          type: 'string',
-          'x-rjsf-grid-area': '12',
-        },
-        token: {
-          description: 'Token',
-          minLength: 1,
-          title: 'Token',
-          type: 'string',
-          'x-rjsf-grid-area': '12',
-        },
+  const getchExistingCredential = () => {
+    // const componentMetadata = localStorage.getItem('componentMetadata');
+    // const componentMetadataObj = JSON.parse(componentMetadata);
+    // const metadata = JSON.parse(componentMetadataObj.metadata);
+
+    dataFetch(
+      '/api/integrations/credentials',
+      {
+        method: 'GET',
+        credentials: 'include',
+        // body: JSON.stringify({
+        //   application_data: metadata.model,
+        //   status: 'initialize',
+        // }),
       },
-      required: ['secret', 'token'],
-      type: 'object',
-    },
-    uiSchema: {
-      'ui:order': ['name'],
-    },
+      (result) => {
+        setExistingConnection(result?.credentials);
+        // const credentialData = result?.credential;
+        // setCredential(credentialData);
+        // const schema = credentialData.schema;
+        // const jsonSchema = JSON.parse(schema);
+        // setSchema(jsonSchema);
+      },
+    );
+  };
+
+  const verifyConnection = () => {
+    const componentMetadata = localStorage.getItem('componentMetadata');
+    const componentMetadataObj = JSON.parse(componentMetadata);
+    const metadata = JSON.parse(componentMetadataObj.metadata);
+    // Kind: <available from the component schema received>
+
+    // Name: <name of the connection>
+
+    // Type:  <available from the component schema received>
+
+    // Subtype:  <available from the component schema received>
+
+    // Metadata: this contains whatever user inputted in the RJSF form.
+
+    // Credential Secret: this contains whatever user entered in the RJSF form for credential (empty if credential schema was not received)
+
+    // ID: use the same id as received previously as part of initial API request to get schemas.
+
+    // Status: register
+
+    dataFetch(
+      '/api/integrations/connections/register',
+      {
+        method: 'POST',
+        credentials: 'include',
+        body: JSON.stringify({
+          Kind: metadata.model,
+          Name: 'initialize',
+          Type: '',
+          Subtype: '',
+          Metadata: '',
+          'Credential Secret': '',
+          ID: '',
+          Status: '',
+        }),
+      },
+      (result) => {
+        console.log('🚀 ~ file: StepperContent.js:170 ~ verifyConnection ~ result:', result);
+        // const connectionData = result?.component
+        // setComponent(connectionData)
+        // const schema = connectionData.schema
+        // const jsonSchema = JSON.parse(schema)
+        // setSchema(jsonSchema);
+      },
+    );
   };
 
   const handleCallback = () => {
-    // MOve to step 2
+    verifyConnection();
+    handleNext();
   };
 
   const cancelCallback = () => {
@@ -117,22 +192,48 @@ export const CredentialDetails = () => {
       <p className={{ paddingLeft: '16px' }}>
         Select an existing credential to use for this connection
       </p>
-      <RJSFWrapper
-        key="register-connection-rjsf-form"
-        uiSchema={schemaExistingCredential.uiSchema}
-        jsonSchema={schemaExistingCredential.rjsfSchema}
-        liveValidate={false}
-        formRef={formRef}
-      />
+      <FormControl>
+        <Select
+          labelId="demo-simple-select-label"
+          id="demo-simple-select"
+          // value={value || 'discovered'}
+          // defaultValue={value}
+          onClick={(e) => e.stopPropagation()}
+          // onChange={() => handleRegisterConnectionModal(tableMeta)}
+          // className={classes.statusSelect}
+          disableUnderline
+          MenuProps={{
+            anchorOrigin: {
+              vertical: 'bottom',
+              horizontal: 'left',
+            },
+            transformOrigin: {
+              vertical: 'top',
+              horizontal: 'left',
+            },
+            getContentAnchorEl: null,
+            MenuListProps: { disablePadding: true },
+            PaperProps: { square: true },
+          }}
+        >
+          {/* {existingConnection?.map((a) => console.log(a))} */}
+        </Select>
+      </FormControl>
       <p style={{ display: 'flex', justifyContent: 'center' }}>-OR-</p>
       <p style={{ paddingLeft: '16px' }}>Configure a new credential to use for this connection</p>
       <RJSFWrapper
+        key="register-connection-rjsf-form"
+        jsonSchema={schema}
+        liveValidate={false}
+        formRef={formRef}
+      />
+      {/* <RJSFWrapper
         key="register-connection-rjsf-form"
         uiSchema={schemaNewCredential.uiSchema}
         jsonSchema={schemaNewCredential.rjsfSchema}
         liveValidate={false}
         formRef={formRef}
-      />
+      /> */}
     </StepperContent>
   );
 };

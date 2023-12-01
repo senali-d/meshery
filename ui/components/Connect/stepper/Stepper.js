@@ -81,7 +81,15 @@ export default function CustomizedSteppers({ stepData }) {
           ))}
         </Stepper>
       </div>
-      <div style={{ marginTop: '2rem', display: 'flex', minHeight: '58vh' }}>
+      <div
+        style={{
+          marginTop: '2rem',
+          display: 'flex',
+          minHeight: '58vh',
+          minWidth: '100%',
+          width: '100%',
+        }}
+      >
         <TipsCarousel tips={ConnectionStepperTips} />
         {React.cloneElement(ActiveStepContent, stepProps)}
       </div>

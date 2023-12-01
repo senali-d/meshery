@@ -32,17 +32,19 @@ export const ConnectionStepperTips = [
   'Import your Docker Compose, Helm Chart, and Kubernetes mainfests. Let Meshery visualize and deploy them.',
 ];
 
-export const ConnectionADetailContent = {
-  title: 'Connecting to {Component Name}',
-  subtitle: '{component description}?',
+export const ConnectionDetailContent = {
+  title: '',
   tips: 'Establish a connection by registering this resource.',
   btnText: 'Next',
-  cancel: true,
+  cancel: false,
 };
 
 export const CredentialDetailContent = {
-  title: 'Credential for {Component-Name}',
+  title: '',
+  tipsType: 'cb',
+  tips: 'force connection bypass credential verification',
   btnText: 'Verify Connection',
+  cancel: true,
 };
 
 export const FinishContent = {
