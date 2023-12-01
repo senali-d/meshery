@@ -63,7 +63,7 @@ export const ConnectionDetails = ({ handleNext }) => {
 export const CredentialDetails = ({ handleNext }) => {
   const [schema, setSchema] = useState({});
   const [credential, setCredential] = useState({});
-  const [, /*existingConnection*/ setExistingConnection] = useState({});
+  const [existingCredentials, setExistingCredentials] = useState({});
   const formRef = React.createRef();
 
   useEffect(() => {
@@ -116,7 +116,12 @@ export const CredentialDetails = ({ handleNext }) => {
         // }),
       },
       (result) => {
-        setExistingConnection(result?.credentials);
+        setExistingCredentials(result?.credentials);
+        result?.credentials?.map((c) => console.log(c, 'c'));
+        console.log(
+          '🚀 ~ file: StepperContent.js:120 ~ getchExistingCredential ~ result?.credentials:',
+          result?.credentials,
+        );
         // const credentialData = result?.credential;
         // setCredential(credentialData);
         // const schema = credentialData.schema;
@@ -192,6 +197,8 @@ export const CredentialDetails = ({ handleNext }) => {
       <p className={{ paddingLeft: '16px' }}>
         Select an existing credential to use for this connection
       </p>
+      {existingCredentials?.map((a) => console.log(a))}
+
       <FormControl>
         <Select
           labelId="demo-simple-select-label"
@@ -216,7 +223,7 @@ export const CredentialDetails = ({ handleNext }) => {
             PaperProps: { square: true },
           }}
         >
-          {/* {existingConnection?.map((a) => console.log(a))} */}
+          <></>
         </Select>
       </FormControl>
       <p style={{ display: 'flex', justifyContent: 'center' }}>-OR-</p>
